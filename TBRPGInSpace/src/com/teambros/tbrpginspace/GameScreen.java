@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,16 +27,34 @@ public class GameScreen extends InputAdapter implements Screen  {
 	private Stage stage;
 	private Sprite spaceShip;
 	private Sprite enemy;
+	private int difficulty;
 	
 	public GameScreen(Game game){
 		this.game = game;
 		Gdx.app.log("GS", "creating GameScreen");
 		sprites = new ArrayList<Sprite>();
 		stage = new Stage();
+		difficulty = 0;
 	}
 	
 	@Override
 	public void render(float delta) {
+		
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			Vector2 vec = new Vector2(0, 5);
+			vec.rotate(spaceShip.getRotation());
+			spaceShip.setX(spaceShip.getX() + vec.x);
+			spaceShip.setY(spaceShip.getY() + vec.y);
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+			spaceShip.rotate(10);
+		}
+		
+		if (Gdx.input.isKeyPressed(Keys.D)) {
+			spaceShip.rotate(-10);
+		}
+		
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -52,9 +71,10 @@ public class GameScreen extends InputAdapter implements Screen  {
 		Vector2 enemyPos = new Vector2(enemy.getX() + enemy.getWidth() / 2, enemy.getY()+ enemy.getHeight() / 2);
 		Vector2 playerPos = new Vector2(spaceShip.getX() + spaceShip.getWidth() / 2, spaceShip.getY()+ spaceShip.getHeight());
 		
-		if (enemyPos.dst(playerPos) < 100) {
+		if (enemyPos.dst(playerPos) < 150) {
 			this.dispose();
-			game.setScreen(new FightScreen(game));
+			difficulty++;
+			game.setScreen(new FightScreen(game, difficulty, this));
 		}
 
 	}
@@ -97,25 +117,11 @@ public class GameScreen extends InputAdapter implements Screen  {
 
 	}
 	
-	@Override
-	public boolean keyTyped(char character) {
-		if (character == 'w') {
-			Vector2 vec = new Vector2(0, 10);
-			vec.rotate(spaceShip.getRotation());
-			spaceShip.setX(spaceShip.getX() + vec.x);
-			spaceShip.setY(spaceShip.getY() + vec.y);
-		}
-		
-		if (character == 'a') {
-			spaceShip.rotate(10);
-		}
-		
-		if (character == 'd') {
-			spaceShip.rotate(-10);
-		}
-		
-		return true;
-	}
+//	@Override
+//	public boolean keyTyped(char character) {
+//
+//		return true;
+//	}
 	
 	private void createEnemy(){
 		Vector2 shipPos = new Vector2(spaceShip.getX(), spaceShip.getY());

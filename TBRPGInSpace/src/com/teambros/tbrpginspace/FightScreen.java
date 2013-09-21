@@ -1,12 +1,17 @@
 package com.teambros.tbrpginspace;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,12 +24,20 @@ public class FightScreen implements Screen {
 	private Game game;
 	private Stage stage;
 	private BitmapFont font;
-
+	private Sprite background;
+	private SpriteBatch batch;
+	private ArrayList<Sprite> sprites;
+	private int difficulty;
+	private GameScreen gameScreen;
 	
-	public FightScreen(Game game){
+	public FightScreen(Game game, int difficulty, GameScreen gameScreen){
 		this.game = game;
+		sprites = new ArrayList<Sprite>();
 		stage = new Stage();
 		font = new BitmapFont();
+		batch = new SpriteBatch();
+		this.difficulty = difficulty;
+		this.gameScreen = gameScreen;
 	}
 	
 	private void createActionBox(){
@@ -42,19 +55,18 @@ public class FightScreen implements Screen {
 
 		actionBoxTable.left().bottom();
 		
-		TextButton button = new TextButton("Yo", style);
+		TextButton button = new TextButton("Action1", style);
 		button.addListener(new ActionButtonListener());
-		
 		actionBoxTable.add(button).padLeft(10);
-		button = new TextButton("Yo",style);
-		button.addListener(new ActionButtonListener());
-		actionBoxTable.row();
-		actionBoxTable.add(button).padLeft(10);
-		button = new TextButton("Yo",style);
+		button = new TextButton("Action2",style);
 		button.addListener(new ActionButtonListener());
 		actionBoxTable.row();
 		actionBoxTable.add(button).padLeft(10);
-		button = new TextButton("Yo",style);
+		button = new TextButton("Action3",style);
+		button.addListener(new ActionButtonListener());
+		actionBoxTable.row();
+		actionBoxTable.add(button).padLeft(10);
+		button = new TextButton("Action4",style);
 		button.addListener(new ActionButtonListener());
 		actionBoxTable.row();
 		actionBoxTable.add(button).padLeft(10);
@@ -66,18 +78,52 @@ public class FightScreen implements Screen {
 		stage.addActor(actionBoxTable);
 	}
 	
+	public void victory(){
+		game.setScreen(gameScreen);
+	}
+	
 	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		for (Sprite s : sprites){
+			s.draw(batch);			
+		}
+		background.draw(batch);
+		batch.end();
+		stage.act();
+		stage.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-
-		createActionBox();
+//		Texture texture = new Texture(Gdx.files.internal("data/spacetile.png"));
+//		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//
+//		Sprite sprite = new Sprite(texture);
+//		Sprite anotherSprite = new Sprite(texture);
+//		Sprite thirdSprite = new Sprite(texture);
+//		Sprite fourthSprite = new Sprite(texture);
+//		
+//		sprite.setPosition(0, 0);
+//		anotherSprite.setPosition(sprite.getX() + sprite.getWidth(), 0);
+//		thirdSprite.setPosition(0, sprite.getX() + sprite.getHeight());
+//		fourthSprite.setPosition(sprite.getX() + sprite.getWidth(),
+//				sprite.getX() + sprite.getHeight());
+//		
+//		fourthSprite.rotate(180);
+//		anotherSprite.rotate(270);
+//		sprites.add(sprite);
+//		sprites.add(anotherSprite);
+//		sprites.add(thirdSprite);
+//		sprites.add(fourthSprite);
 		
+		createActionBox();
+		Texture tex = new Texture(Gdx.files.internal("data/background.png"));
+		background = new Sprite(tex);
+		background.setPosition(-100, -100);
 	}
 
 	@Override
