@@ -14,12 +14,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class GameScreen implements Screen {
 
@@ -100,22 +100,33 @@ public class GameScreen implements Screen {
 //		sprite.setY(actionBoxTable.getY());
 //		actionBoxTable.setBackground(new SpriteDrawable(sprite));
 		
-		LabelStyle style = new LabelStyle();
+		/*LabelStyle style = new LabelStyle();*/
+		TextButtonStyle style = new TextButtonStyle();
 		style.font = font;
 		style.fontColor = new Color(1f, 1f, 1f, 1f);
 		
+		TextButton button = new TextButton("Yo",style);
+		button.addListener(new AddListener());
 		actionBoxTable.left().bottom();
-		actionBoxTable.add(new Label("Wtf mate", style)).padLeft(10);
+		actionBoxTable.add(button).padLeft(10);
+		button = new TextButton("Yo",style);
+		button.addListener(new AddListener());
 		actionBoxTable.row();
-		actionBoxTable.add(new Label("Wtf mate", style)).padLeft(10);
+		actionBoxTable.add(button).padLeft(10);
+		button = new TextButton("Yo",style);
+		button.addListener(new AddListener());
 		actionBoxTable.row();
-		actionBoxTable.add(new Label("Wtf mate", style)).padLeft(10);
+		actionBoxTable.add(button).padLeft(10);
+		button = new TextButton("Yo",style);
+		button.addListener(new AddListener());
 		actionBoxTable.row();
-		actionBoxTable.add(new Label("Wtf mate", style)).padLeft(10);
+		actionBoxTable.add(button).padLeft(10);
+
+
 
 		
 		stage.addActor(actionBoxTable);
-	}
+	}	
 
 	@Override
 	public void show() {
@@ -146,5 +157,15 @@ public class GameScreen implements Screen {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	private class AddListener extends InputListener {
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+			return true;
+		}
+					
+		public void touchUp(InputEvent event, float x, float y, int pointer, int button) {			
+			Gdx.app.log("team bros","bros");			
+		}
+	}
 }
