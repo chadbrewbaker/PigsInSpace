@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class FightScreen implements Screen {
+public class FightScreen extends InputAdapter implements Screen {
 	
 	private Game game;
 	private Stage stage;
@@ -74,6 +76,7 @@ public class FightScreen implements Screen {
 		InputMultiplexer imp = new InputMultiplexer();
 		Gdx.input.setInputProcessor(imp);
 		imp.addProcessor(stage);
+		imp.addProcessor(this);
 		
 		stage.addActor(actionBoxTable);
 	}
@@ -98,34 +101,22 @@ public class FightScreen implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-//		Texture texture = new Texture(Gdx.files.internal("data/spacetile.png"));
-//		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-//
-//		Sprite sprite = new Sprite(texture);
-//		Sprite anotherSprite = new Sprite(texture);
-//		Sprite thirdSprite = new Sprite(texture);
-//		Sprite fourthSprite = new Sprite(texture);
-//		
-//		sprite.setPosition(0, 0);
-//		anotherSprite.setPosition(sprite.getX() + sprite.getWidth(), 0);
-//		thirdSprite.setPosition(0, sprite.getX() + sprite.getHeight());
-//		fourthSprite.setPosition(sprite.getX() + sprite.getWidth(),
-//				sprite.getX() + sprite.getHeight());
-//		
-//		fourthSprite.rotate(180);
-//		anotherSprite.rotate(270);
-//		sprites.add(sprite);
-//		sprites.add(anotherSprite);
-//		sprites.add(thirdSprite);
-//		sprites.add(fourthSprite);
-		
+	public void resize(int width, int height) {		
 		createActionBox();
-		Texture tex = new Texture(Gdx.files.internal("data/background.png"));
+		Texture tex = new Texture(Gdx.files.internal("data/fantasyplanetsurface.png"));
 		background = new Sprite(tex);
-		background.setPosition(-100, -100);
+		background.setPosition(-300, -100);
 	}
-
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.ESCAPE) {
+			game.setScreen(gameScreen);
+			return true;
+		}
+		return false;	
+	}
+	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub

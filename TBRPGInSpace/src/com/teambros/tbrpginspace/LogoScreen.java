@@ -1,75 +1,44 @@
 package com.teambros.tbrpginspace;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-public class LogoScreen implements Screen {
+public class LogoScreen extends InputAdapter implements Screen {
 	
 	
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
-	private Sprite sprite;
+//	private Sprite sprite;
 	private GameScreen gameScreen;
+	private ArrayList<Sprite> sprites;
 	private Stage stage;
-	private Game tbrpg;
+	private Game game;
+	private BitmapFont font;
 
-	public LogoScreen(final TBRPGInSpace tbrpg){
-		this.tbrpg = tbrpg;
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
-		
-		camera = new OrthographicCamera(w, h);
+	public LogoScreen(Game game){
+		this.game = game;
 		batch = new SpriteBatch();
-		
-		texture = new Texture(Gdx.files.internal("data/logo.gif"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		sprite = new Sprite(texture);
-		
-//		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		sprite.setPosition(sprite.getOriginX(), sprite.getOriginY());
-		
+		font = new BitmapFont();
 		stage = new Stage();
-		Actor a = new Actor();
-		Gdx.app.log("sprite x", ""+sprite.getX());
-		Gdx.app.log("sprite x", ""+sprite.getY());
-		Gdx.app.log("sprite x", ""+sprite.getWidth());
-		Gdx.app.log("sprite height", ""+sprite.getWidth());
-		
-		a.setX(sprite.getX());
-		a.setY(sprite.getY());
-		a.setWidth(sprite.getWidth());
-		a.setHeight(sprite.getHeight());
-		a.addListener(new InputListener() {
-			
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-						
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				
-				Gdx.app.log("touchDown", ""+event.getButton());
-				tbrpg.setScreen(new GameScreen(tbrpg));
-			}
-			
-		});
-		
-		stage.addActor(a);
-		Gdx.input.setInputProcessor(stage);
+		sprites = new ArrayList<Sprite>();
 	}
 	
 	@Override
@@ -77,20 +46,78 @@ public class LogoScreen implements Screen {
 
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-//		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		for (Sprite s : sprites){
+			s.draw(batch);			
+		}
+//		sprite.draw(batch);
+		batch.end();
+	
 		stage.act();
 		stage.draw();
-		batch.begin();
-		sprite.draw(batch);
-		batch.end();
 		
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
+		Texture texture = new Texture(Gdx.files.internal("data/spacetile.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		Sprite sprite = new Sprite(texture);
+		Sprite anotherSprite = new Sprite(texture);
+		Sprite thirdSprite = new Sprite(texture);
+		Sprite fourthSprite = new Sprite(texture);
 		
+		sprite.setPosition(0, 0);
+		anotherSprite.setPosition(sprite.getX() + sprite.getWidth(), 0);
+		thirdSprite.setPosition(0, sprite.getX() + sprite.getHeight());
+		fourthSprite.setPosition(sprite.getX() + sprite.getWidth(),
+				sprite.getX() + sprite.getHeight());
+		
+		fourthSprite.rotate(180);
+		anotherSprite.rotate(270);
+		
+		sprites.add(sprite);
+		sprites.add(anotherSprite);
+		sprites.add(thirdSprite);
+		sprites.add(fourthSprite);
+		
+		Gdx.input.setInputProcessor(this);
+		
+		// TODO Auto-generated method stub
+		Table actionBoxTable = new Table();
+		actionBoxTable.setPosition(0, Gdx.graphics.getHeight() - Gdx.graphics.getHeight()  / 3);
+		actionBoxTable.setColor(Color.BLUE);
+
+		LabelStyle style = new LabelStyle();
+		
+		font.setScale(10);
+		style.font = font;
+		style.fontColor = new Color(1f, 1f, 1f, 1f);
+		
+		Label label = new Label("DEEP SPACE", style);
+		actionBoxTable.right();
+		actionBoxTable.addActor(label);
+		stage.addActor(actionBoxTable);
+
+	}
+	
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.SPACE) {
+			game.setScreen(new GameScreen(game));
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (button == 0) {
+			game.setScreen(new GameScreen(game));
+			return true;			
+		}
+		return false;
 	}
 
 	@Override

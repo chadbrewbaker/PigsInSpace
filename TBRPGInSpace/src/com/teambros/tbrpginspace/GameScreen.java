@@ -33,7 +33,6 @@ public class GameScreen extends InputAdapter implements Screen  {
 		this.game = game;
 		Gdx.app.log("GS", "creating GameScreen");
 		sprites = new ArrayList<Sprite>();
-		stage = new Stage();
 		difficulty = 0;
 	}
 	
@@ -41,7 +40,7 @@ public class GameScreen extends InputAdapter implements Screen  {
 	public void render(float delta) {
 		
 		if (Gdx.input.isKeyPressed(Keys.W)) {
-			Vector2 vec = new Vector2(0, 5);
+			Vector2 vec = new Vector2(0, 20);
 			vec.rotate(spaceShip.getRotation());
 			spaceShip.setX(spaceShip.getX() + vec.x);
 			spaceShip.setY(spaceShip.getY() + vec.y);
@@ -71,7 +70,7 @@ public class GameScreen extends InputAdapter implements Screen  {
 		Vector2 enemyPos = new Vector2(enemy.getX() + enemy.getWidth() / 2, enemy.getY()+ enemy.getHeight() / 2);
 		Vector2 playerPos = new Vector2(spaceShip.getX() + spaceShip.getWidth() / 2, spaceShip.getY()+ spaceShip.getHeight());
 		
-		if (enemyPos.dst(playerPos) < 150) {
+		if (enemyPos.dst(playerPos) < 100) {
 			this.dispose();
 			difficulty++;
 			game.setScreen(new FightScreen(game, difficulty, this));
@@ -81,6 +80,7 @@ public class GameScreen extends InputAdapter implements Screen  {
 
 	@Override
 	public void resize(int width, int height) {
+		stage = new Stage();
 		batch = new SpriteBatch();
 
 		Texture texture = new Texture(Gdx.files.internal("data/spacetile.png"));
@@ -117,13 +117,17 @@ public class GameScreen extends InputAdapter implements Screen  {
 
 	}
 	
-//	@Override
-//	public boolean keyTyped(char character) {
-//
-//		return true;
-//	}
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.ESCAPE) {
+			game.setScreen(new LogoScreen(game));
+			return true;
+		}
+		return false;	
+	}
+
 	
-	private void createEnemy(){
+	private void createEnemy() {
 		Vector2 shipPos = new Vector2(spaceShip.getX(), spaceShip.getY());
 		Random generator = new Random();
 		Vector2 enemyPos = new Vector2();
@@ -140,7 +144,8 @@ public class GameScreen extends InputAdapter implements Screen  {
 				break;
 			}
 		}
-		Texture tex = new Texture(Gdx.files.internal("data/enemyspaceshipsmall.png"));
+		Texture tex = new Texture(Gdx.files.internal("data/planet.png"));
+//		Texture tex = new Texture(Gdx.files.internal("data/enemyspaceshipsmall.png"));
 		enemy = new Sprite(tex);
 		enemy.setX(enemyPos.x);
 		enemy.setY(enemyPos.y);
