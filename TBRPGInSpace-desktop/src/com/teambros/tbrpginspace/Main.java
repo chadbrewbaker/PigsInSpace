@@ -9,7 +9,7 @@ public class Main {
 		cfg.title = "TBRPGInSpace";
 		cfg.useGL20 = false;
 		cfg.width = 1000;
-		cfg.height = 800;
+		cfg.height = 700;
 		cfg.useGL20 = true;
 		
 		new LwjglApplication(new TBRPGInSpace(), cfg);

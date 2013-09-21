@@ -6,8 +6,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stuff
 	}
 
 	@Override
