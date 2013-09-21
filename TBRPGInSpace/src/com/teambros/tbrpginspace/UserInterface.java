@@ -1,4 +1,6 @@
-package com.intellectuallyspayed.graphicobjects;
+package com.teambros.tbrpginspace;
+
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -8,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,9 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.intellectuallyspayed.h3x.H3XGlobals;
-import com.intellectuallyspayed.h3x.H3XUtils;
-import com.intellectuallyspayed.h3x.MenuListener;
 
 
 public class UserInterface extends InputAdapter {
@@ -48,7 +46,7 @@ public class UserInterface extends InputAdapter {
         private UserInterface() {
         	
         	stage = new Stage();
-    		atlas = H3XUtils.getAssetManager().get("data/boxes.pack", TextureAtlas.class);
+//    		atlas = H3XUtils.getAssetManager().get("data/boxes.pack", TextureAtlas.class);
     		skin = new Skin();
     		skin.addRegions(atlas);
             
@@ -56,7 +54,7 @@ public class UserInterface extends InputAdapter {
             /** ---------------- info box ----------------- **/            
     		LabelStyle style = new LabelStyle();
 //    		style.background = skin.getDrawable("noinfobox");
-    		FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal("data/homespun.ttf"));
+//    		FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal("data/homespun.ttf"));
     		BitmapFont font;
     		Drawable drawable = skin.getDrawable("blueinfobox");
     		
@@ -67,11 +65,11 @@ public class UserInterface extends InputAdapter {
     			ratio = MAX_SIZE;
     		}
     		
-    		font = gen.generateFont((int) ratio);
+//    		font = gen.generateFont((int) ratio);
     		
-    		style.font = font;
+//    		style.font = font;
     		
-    		gen.dispose();
+//    		gen.dispose();
     		style.fontColor = new Color(.0f, .8f, 1f, .8f);
             
             // non-changing labels
@@ -149,41 +147,41 @@ public class UserInterface extends InputAdapter {
 	        
                         
             /** --------------- menu button --------------- **/
-            Sprite settings = new Sprite(H3XUtils.getAssetManager().get("data/settingsButton.png", Texture.class));
-            Sprite settingsPressed = new Sprite(H3XUtils.getAssetManager().get("data/settingsButtonPressed.png", Texture.class));
-            ImageButton.ImageButtonStyle menuBS = new ImageButton.ImageButtonStyle();
-            menuBS.down = new SpriteDrawable(settingsPressed);
-            menuBS.up = new SpriteDrawable(settings);
-            menuButton = new ImageButton(menuBS);
-            menuButton.addListener(new MenuListener());
+//            Sprite settings = new Sprite(H3XUtils.getAssetManager().get("data/settingsButton.png", Texture.class));
+//            Sprite settingsPressed = new Sprite(H3XUtils.getAssetManager().get("data/settingsButtonPressed.png", Texture.class));
+//            ImageButton.ImageButtonStyle menuBS = new ImageButton.ImageButtonStyle();
+//            menuBS.down = new SpriteDrawable(settingsPressed);
+//            menuBS.up = new SpriteDrawable(settings);
+//            menuButton = new ImageButton(menuBS);
+//            menuButton.addListener(new MenuListener());
+//            
+//            Sprite consoleDown = new Sprite(H3XUtils.getAssetManager().get("data/consoleDown.png", Texture.class));
+//            Sprite consoleUp = new Sprite(H3XUtils.getAssetManager().get("data/consoleUp.png", Texture.class));
+//            ImageButton.ImageButtonStyle consoleBS = new ImageButton.ImageButtonStyle();
+//            consoleBS.checked = new SpriteDrawable(consoleUp);
+//            consoleBS.up = new SpriteDrawable(consoleDown);
+//            consoleButton = new ImageButton(consoleBS);
+//            consoleButton.addListener(new MenuListener());
             
-            Sprite consoleDown = new Sprite(H3XUtils.getAssetManager().get("data/consoleDown.png", Texture.class));
-            Sprite consoleUp = new Sprite(H3XUtils.getAssetManager().get("data/consoleUp.png", Texture.class));
-            ImageButton.ImageButtonStyle consoleBS = new ImageButton.ImageButtonStyle();
-            consoleBS.checked = new SpriteDrawable(consoleUp);
-            consoleBS.up = new SpriteDrawable(consoleDown);
-            consoleButton = new ImageButton(consoleBS);
-            consoleButton.addListener(new MenuListener());
-            
-            Table menuTable = new Table();
-            menuTable.setX(Gdx.graphics.getWidth() - settings.getWidth());
-            menuTable.setY(Gdx.graphics.getHeight() - settings.getHeight());
-            menuTable.add(menuButton);//.padTop(10);
-            menuTable.setHeight(settings.getHeight());
-            menuTable.setWidth(settings.getWidth());
-
-            Table consoleTable = new Table();
-            consoleTable.setX(0);
-            consoleTable.setY(Gdx.graphics.getHeight() - consoleDown.getHeight());
-            consoleTable.add(consoleButton);
-            consoleTable.setHeight(consoleUp.getHeight());
-            consoleTable.setWidth(consoleUp.getWidth());            
+//            Table menuTable = new Table();
+//            menuTable.setX(Gdx.graphics.getWidth() - settings.getWidth());
+//            menuTable.setY(Gdx.graphics.getHeight() - settings.getHeight());
+//            menuTable.add(menuButton);//.padTop(10);
+//            menuTable.setHeight(settings.getHeight());
+//            menuTable.setWidth(settings.getWidth());
+//
+//            Table consoleTable = new Table();
+//            consoleTable.setX(0);
+//            consoleTable.setY(Gdx.graphics.getHeight() - consoleDown.getHeight());
+//            consoleTable.add(consoleButton);
+//            consoleTable.setHeight(consoleUp.getHeight());
+//            consoleTable.setWidth(consoleUp.getWidth());            
             /** ------------------------------------------- **/
             
-            stage.addActor(consoleTable);
-            stage.addActor(menuTable);
-            stage.addActor(infoTable);
-            stage.addActor(actionBar);
+//            stage.addActor(consoleTable);
+//            stage.addActor(menuTable);
+//            stage.addActor(infoTable);
+//            stage.addActor(actionBar);
         }
         
         public Stage getStage(){
