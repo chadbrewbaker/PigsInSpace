@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>Pigs in Space</title>
+	<style>
+	body {
+		margin:0px;
+		padding:0px;
+		text-align:center;
+		background: black;
+	}
+	canvas{
+		outline:0;
+		margin-left: auto;
+		margin-right: auto;
+		float: left;
+		display: none;
+	}
+	#eventLog{
+		color: white;
+		font-family: monospace;
+   		white-space: pre;
+   		float: left;
+   		text-align: left;
+	}
+	</style>
+</head>
+<body>
+	<img src="assets/images/logo.gif" id="logo" alt="" />
+	<canvas id='c'></canvas>
+	<p id="eventLog"></p>
+	<script src="assets/js/jquery.js"></script>
+	<script src="assets/js/game.js"></script>
+	<img src="assets/images/spaceship1.png" id="spaceship" style="display:none" />
+	<audio id="themeSong">
+		<source src="assets/music/theme.mp3" type="audio/mpeg" />
+	</audio>
+</body>
+</html>
