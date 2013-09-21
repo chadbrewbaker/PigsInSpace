@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class Main {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "TBRPGInSpace";
+		cfg.title = "Pigs in Space";
 		cfg.width = 1000;
 		cfg.height = 700;
 		cfg.useGL20 = true;
