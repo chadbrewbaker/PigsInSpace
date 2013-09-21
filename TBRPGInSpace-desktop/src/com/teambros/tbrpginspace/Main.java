@@ -7,7 +7,6 @@ public class Main {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "TBRPGInSpace";
-		cfg.useGL20 = false;
 		cfg.width = 1000;
 		cfg.height = 700;
 		cfg.useGL20 = true;
