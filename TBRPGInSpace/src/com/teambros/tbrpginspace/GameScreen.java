@@ -1,44 +1,37 @@
 package com.teambros.tbrpginspace;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
-public class GameScreen implements Screen {
+public class GameScreen extends InputAdapter implements Screen  {
 
-	private Game tbrpg;
+	private Game game;
 	private SpriteBatch batch;
-//	private Sprite sprite;
-	private Texture texture;
-	private Camera camera;
 	private ArrayList<Sprite> sprites;
-	private BitmapFont font;
 	private Stage stage;
+	private Sprite spaceShip;
+	private Sprite enemy;
 	
-	public GameScreen(Game tbrpg){
-		this.tbrpg = tbrpg;
+	public GameScreen(Game game){
+		this.game = game;
 		Gdx.app.log("GS", "creating GameScreen");
 		sprites = new ArrayList<Sprite>();
-		font = new BitmapFont();
 		stage = new Stage();
-		createActionBox();
 	}
 	
 	@Override
@@ -50,21 +43,27 @@ public class GameScreen implements Screen {
 		for (Sprite s : sprites){
 			s.draw(batch);			
 		}
+		spaceShip.draw(batch);
+		enemy.draw(batch);
 		batch.end();
 		stage.act();
 		stage.draw();
+		
+		Vector2 enemyPos = new Vector2(enemy.getX() + enemy.getWidth() / 2, enemy.getY()+ enemy.getHeight() / 2);
+		Vector2 playerPos = new Vector2(spaceShip.getX() + spaceShip.getWidth() / 2, spaceShip.getY()+ spaceShip.getHeight());
+		
+		if (enemyPos.dst(playerPos) < 100) {
+			this.dispose();
+			game.setScreen(new FightScreen(game));
+		}
 
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		batch = new SpriteBatch();
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
 
-		camera = new OrthographicCamera(w, h);
-
-		texture = new Texture(Gdx.files.internal("data/spacetile.png"));
+		Texture texture = new Texture(Gdx.files.internal("data/spacetile.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		Sprite sprite = new Sprite(texture);
@@ -81,53 +80,68 @@ public class GameScreen implements Screen {
 		fourthSprite.rotate(180);
 		anotherSprite.rotate(270);
 
-		
+		Texture shipTex = new Texture(Gdx.files.internal("data/spaceshipsmall.png"));
+		spaceShip = new Sprite(shipTex);
+		spaceShip.setPosition(Gdx.graphics.getWidth() / 2, 0);
+		spaceShip.setOrigin(spaceShip.getWidth() / 2, spaceShip.getHeight() / 2);
+		createEnemy();
+
 		sprites.add(sprite);
 		sprites.add(anotherSprite);
 		sprites.add(thirdSprite);
 		sprites.add(fourthSprite);
+		InputMultiplexer imp = new InputMultiplexer();
+		Gdx.input.setInputProcessor(imp);
+		imp.addProcessor(stage);
+		imp.addProcessor(this);
 
 	}
 	
-	private void createActionBox(){
-		Table actionBoxTable = new Table();
-		actionBoxTable.setPosition(0, 0);
-		actionBoxTable.setWidth(Gdx.graphics.getWidth() / 4);
-		actionBoxTable.setHeight(Gdx.graphics.getHeight() / 3);
-//		Texture tex = new Texture(Gdx.files.internal("data/logo.png"));
-//		Sprite sprite = new Sprite(tex);
-//		sprite.setX(actionBoxTable.getX());
-//		sprite.setY(actionBoxTable.getY());
-//		actionBoxTable.setBackground(new SpriteDrawable(sprite));
+	@Override
+	public boolean keyTyped(char character) {
+		if (character == 'w') {
+			Vector2 vec = new Vector2(0, 10);
+			vec.rotate(spaceShip.getRotation());
+			spaceShip.setX(spaceShip.getX() + vec.x);
+			spaceShip.setY(spaceShip.getY() + vec.y);
+		}
 		
-		/*LabelStyle style = new LabelStyle();*/
-		TextButtonStyle style = new TextButtonStyle();
-		style.font = font;
-		style.fontColor = new Color(1f, 1f, 1f, 1f);
+		if (character == 'a') {
+			spaceShip.rotate(10);
+		}
 		
-		TextButton button = new TextButton("Yo",style);
-		button.addListener(new AddListener());
-		actionBoxTable.left().bottom();
-		actionBoxTable.add(button).padLeft(10);
-		button = new TextButton("Yo",style);
-		button.addListener(new AddListener());
-		actionBoxTable.row();
-		actionBoxTable.add(button).padLeft(10);
-		button = new TextButton("Yo",style);
-		button.addListener(new AddListener());
-		actionBoxTable.row();
-		actionBoxTable.add(button).padLeft(10);
-		button = new TextButton("Yo",style);
-		button.addListener(new AddListener());
-		actionBoxTable.row();
-		actionBoxTable.add(button).padLeft(10);
-
-
-
+		if (character == 'd') {
+			spaceShip.rotate(-10);
+		}
 		
-		stage.addActor(actionBoxTable);
-	}	
-
+		return true;
+	}
+	
+	private void createEnemy(){
+		Vector2 shipPos = new Vector2(spaceShip.getX(), spaceShip.getY());
+		Random generator = new Random();
+		Vector2 enemyPos = new Vector2();
+		while (true) {
+			int enemyPosX= generator.nextInt(Gdx.graphics.getWidth());
+			int enemyPosY = generator.nextInt(Gdx.graphics.getHeight());
+			enemyPos.x = (enemyPosX * .9f);
+			enemyPos.y = (enemyPosY * .9f);
+			float distance = shipPos.dst(enemyPosX, enemyPosY);
+			if (distance > 200) {
+				Gdx.app.log("shipPos", ""+shipPos);
+				Gdx.app.log("enemyPos", ""+enemyPos);
+				Gdx.app.log("distance", ""+distance);
+				break;
+			}
+		}
+		Texture tex = new Texture(Gdx.files.internal("data/enemyspaceshipsmall.png"));
+		enemy = new Sprite(tex);
+		enemy.setX(enemyPos.x);
+		enemy.setY(enemyPos.y);
+		enemy.setOrigin(enemy.getWidth() / 2, enemy.getHeight() / 2);
+		enemy.rotate(generator.nextInt(60) - 30);
+	}
+		
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
@@ -154,18 +168,8 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private class AddListener extends InputListener {
-		@Override
-		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-			return true;
-		}
-					
-		public void touchUp(InputEvent event, float x, float y, int pointer, int button) {			
-			Gdx.app.log("team bros","bros");			
-		}
+		stage.clear();
+		stage.dispose();
+		batch.dispose();		
 	}
 }
