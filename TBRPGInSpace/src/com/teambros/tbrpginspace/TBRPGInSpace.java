@@ -27,8 +27,6 @@ public class TBRPGInSpace extends Game {
 		texture = new Texture(Gdx.files.internal("data/logo.gif"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-//		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
-		
 		sprite = new Sprite(texture);
 		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
