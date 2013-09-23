@@ -1,7 +1,7 @@
-function start(){
+var start = function(){
 	$("#logo").hide();
 	startGame();
-}
+};
 
 $('body').keyup(function(e){
 	if(e.keyCode == 32){
@@ -61,7 +61,6 @@ var startGame = function(){
 		};
 
 		var drawSpaceShip = function(){
-			//console.log("drawSpaceShip");
 			ctx.drawImage(spaceship, x, y, 114, 200);
 		};
 
@@ -89,7 +88,6 @@ var startGame = function(){
 
 		var drawWolf = function(){
 			ctx.drawImage(wolf, x, y, 250, 256);
-			//console.log("drew the wolf");
 		};
 
 		var wolfSpeech = function(){
@@ -120,18 +118,18 @@ var startGame = function(){
 	var arrowImg = new Image();
 	arrowImg.src = "assets/images/arrow.png";
 
-	var highlightPig = 0;
-	var highlightEnemy = 0;
+	var highlightPig = null;
+	var highlightEnemy = null;
 	$('body').keyup(function(e){
 		switch(e.keyCode){
 			case 49:
-				highlightPig = 1;
+				highlightPig = 0;
 				break;
 			case 50:
-				highlightPig = 2;
+				highlightPig = 1;
 				break;
 			case 51:
-				highlightPig = 3;
+				highlightPig = 2;
 				break;
 			case 65:
 				highlightEnemy = 1;
@@ -256,93 +254,118 @@ var startGame = function(){
 
 	var pigs = (function(){
 		var pig = function(){
+			var config = {
+				x: 15,
+				y: height - 170,
+				nextTurn: 0,
+				turnCooldown: 1,
+				damage: 100,
+				pigName: "Pig",
+				attackName: "Attack"
+			};
 			var img = new Image();
 			img.src = "assets/images/pig1.png";
-			var x = 15;
-			var	y = height - 170;
-			var nextTurn = 0;
-			var canAttack = function(){return nextTurn <= turnNumber; };
-			var turnCooldown = 1;
-			var damage = 100;
-			var attack = function(){
+
+			var canAttack = function(){return config.nextTurn <= turnNumber;};
+
+			var calculateDamage = function(){
 				if (canAttack()){
-					nextTurn = turnNumber + turnCooldown;
-					return Math.round(damage * Math.random());
+					config.nextTurn = turnNumber + config.turnCooldown;
+					return Math.round(config.damage * Math.random());
 				}
 				return 0;
 			};
-			var getNextTurn = function(){return nextTurn;};
+
+			var configure = function(options) {
+				$.extend(config, options);
+
+				// img is an object, so we have to handle it separately
+				if (options.hasOwnProperty("src")) {
+					img.src = options.src;
+				}
+			};
+
 			return {
-				nextTurn: getNextTurn,
-				name: "Pig",
-				attackName: "Attack",
-				img: img,
-				turnCooldown: turnCooldown,
-				damage: damage,
-				attack: attack,
+				configure: configure,
+				calculateDamage: calculateDamage,
 				canAttack: canAttack,
-				getX: function(){return x;},
-				getY: function(){return y;},
-				setX: function(_x){x = _x;},
-				setY: function(_y){y = _y;},
+				getNextTurn: function(){return config.nextTurn;},
+				getName: function(){return config.pigName;},
+				getAttackName: function(){return config.attackName;},
+				getTurnCooldown: function(){return config.turnCooldown;},
+				getX: function(){return config.x;},
+				getY: function(){return config.y;},
 				getImg: function(){return img;}
 			};
 		};
 
-		var pig1 = new pig();
-		pig1.name = "Dr. Julius Strangepork";
-		pig1.attackName = "Laser";
-		pig1.turnCooldown = 1;
-		pig1.damage = 100;
-		pig1.img.src = "assets/images/pig1.png";
+		var pigConfigs = [
+			{
+				name: "Dr. Julius Strangepork",
+				attackName: "Laser",
+				turnCooldown: 1,
+				damage: 100,
+				src: "assets/images/pig1.png"
+			},
+			{
+				name: "Captain Link Hogthrob",
+				attackName: "Rocket Launch",
+				turnCooldown: 5,
+				damage: 800,
+				src: "assets/images/pig2.png",
+				x: 165,
+				y: height-150-22
+			},
+			{
+				name: "First Mate Piggy",
+				attackName: "Piggy Slap",
+				turnCooldown: 3,
+				damage: 300,
+				src: "assets/images/pig3.png",
+				x: 315
+			}
+		];
 
-		var pig2 = new pig();
-		pig2.name = "Captain Link Hogthrob";
-		pig2.attackName = "Rocket Launch";
-		pig2.turnCooldown = 5;
-		pig2.damage = 800;
-		pig2.img.src = "assets/images/pig2.png";
-		pig2.setX(165);
-		pig2.setY(height-150-22);
-		console.log(pig2);
-
-		var pig3 = new pig();
-		pig3.name = "First Mate Piggy";
-		pig3.attackName = "Piggy Slap";
-		pig3.turnCooldown = 3;
-		pig3.damage = 300;
-		pig3.img.src = "assets/images/pig3.png";
-		pig3.setX(315);
+		var pigArray = [];
+		var createPigs = (function(){
+			$.each(pigConfigs, function(idx, config){
+				var _pig = new pig();
+				_pig.configure(config);
+				pigArray.push(_pig);
+			});
+		})();
 
 		var drawPigs = function(){
-			for (var pigCounter = 1; pigCounter <= 3; pigCounter++) {
-				var pig = getPig(pigCounter);
+			$.each(pigArray, function(pigCounter, pig){
 				ctx.font = "18px sans-serif";
 				ctx.fillStyle = "white";
 				ctx.drawImage(pig.getImg(), pig.getX(), pig.getY());
-				ctx.fillText(pigCounter, pig.getX() + 40, pig.getY() - 10);
+				ctx.fillText(pigCounter + 1, pig.getX() + 40, pig.getY() - 10);
 				if (highlightPig == pigCounter && pig.canAttack()){
 					ctx.drawImage(arrowImg, pig.getX() + 100, pig.getY() - 25, 50, 50);
 				}
 
 				if (pig.canAttack()) {
-					ctx.fillText(pig.attackName, pig.getX(), pig.getY() + 160);
+					ctx.fillText(pig.getAttackName(), pig.getX(), pig.getY() + 160);
 				} else {
-					ctx.fillText("Next move in " + (pig.nextTurn() - turnNumber) + " turns", pig.getX(), pig.getY() + 160);
+					ctx.fillText("Next move in " + (pig.getNextTurn() - turnNumber) + " turns", pig.getX(), pig.getY() + 160);
 				}
-			}
+			});
 		};
 
 		var getPig = function(pigNo){
-			switch(pigNo){
-				case 1: return pig1;
-				case 2: return pig2;
-				case 3: return pig3;
-			}
+			return pigArray[pigNo];
 		};
 
 		var canAnyAttack = function(){
-			return pig1.canAttack() || pig2.canAttack() || pig3.canAttack();
+			var canAttack = false;
+			$.each(pigArray, function(idx, pig){
+				if (pig.canAttack()) {
+					canAttack = true;
+					return false; // stop iterating
+				}
+			});
+			return canAttack;
 		};
 
 		return { drawPigs: drawPigs, getPig: getPig, canAnyAttack: canAnyAttack };
@@ -352,12 +375,11 @@ var startGame = function(){
 	gameoverImg.src = "assets/images/gameover.png";
 
 	var doAttacks = function(){
-		if ( highlightPig && highlightEnemy) {
+		if (highlightPig >= 0 && highlightEnemy) {
 			var enemy = enemies.getEnemy(highlightEnemy);
 			var pig = pigs.getPig(highlightPig);
-			console.log(pig);
 			if (enemy.isAlive() && pig.canAttack()) {
-				var dmg = pigs.getPig(highlightPig).attack();
+				var dmg = pigs.getPig(highlightPig).calculateDamage();
 				enemy.takeDamage(dmg);
 				resetHighlights();
 				if (enemy.isAlive()) {
